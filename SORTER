@@ -1,0 +1,68 @@
+.data
+vetor:   .word 4, 3, 9, 5, 2, 1
+tamanho: .word 6
+virgula: .asciiz ","
+
+.text
+.globl main
+main:
+    la   $s0, vetor
+    lw   $s1, tamanho
+    move $t0, $zero # i
+
+loop_externo:
+    addi $t7, $s1, -1
+    bge  $t0, $t7, imprimir_todos
+
+    move $t1, $zero #k = 0
+
+loop_interno:
+    subu $t6, $t7, $t0
+    bge  $t1, $t6, fim_interno
+
+    sll  $t4, $t1, 2
+    addi $t5, $t1, 1
+    sll  $t5, $t5, 2
+
+    addu $t8, $s0, $t4
+    addu $t9, $s0, $t5
+
+    lw   $t2, 0($t8)
+    lw   $t3, 0($t9)
+
+    ble  $t2, $t3, nao_troca
+    sw   $t3, 0($t8)
+    sw   $t2, 0($t9)
+
+nao_troca:
+    addi $t1, $t1, 1
+    j    loop_interno
+
+fim_interno:
+    addi $t0, $t0, 1
+    j    loop_externo
+
+imprimir_todos:
+    move $t0, $zero
+
+loop_impressao:
+    sll  $t4, $t0, 2
+    addu $t8, $s0, $t4
+    lw   $a0, 0($t8)
+
+    li   $v0, 1
+    syscall
+
+    addi $t7, $s1, -1
+    bge  $t0, $t7, fim_impressao
+
+    li   $v0, 4
+    la   $a0, virgula
+    syscall
+
+    addi $t0, $t0, 1
+    j    loop_impressao
+
+fim_impressao:
+    li   $v0, 10
+    syscall
