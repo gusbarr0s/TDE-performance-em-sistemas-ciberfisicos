@@ -1,0 +1,23 @@
+.data
+ano1: .word 2004
+ano2: .word 2004
+msg:   .asciiz "Soma dos anos: "
+
+.text
+.globl main
+main:
+    lw $t0, ano1
+    lw $t1, ano2
+
+    add $t2, $t0, $t1
+
+    li $v0, 4
+    la $a0, msg
+    syscall
+
+    move $a0, $t2
+    li $v0, 1
+    syscall
+
+    li $v0, 10
+    syscall
